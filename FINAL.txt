@@ -1,0 +1,283 @@
+// final.cpp
+// Amit Jaikumar, CISP 360
+// 7/30/24
+#include <cstdlib>
+#include <ctime>
+#include <fstream>
+#include <iostream>
+using namespace std;
+#include <iomanip>
+
+// Speciﬁcation C3 - Function Activity to Disk
+void logFunction(string name) {
+  ofstream outputlogFile("log.txt", ios_base::app);
+  time_t now = time(0);
+  outputlogFile << name << " started " << ctime(&now) << endl;
+  outputlogFile.close();
+}
+void greeting() {
+  logFunction("greeting");
+  cout << "Hi! This was pretty hard. I tried my best and I hope you enjoy my "
+          "program!"
+       << endl;
+}
+struct Rooms {
+  string room_name;
+  string room_about;
+  // int room_id; // no need for this
+  bool occupied;
+  char exits[4]; // (n,s,e,w)
+  int index;
+};
+// Specification A1-  Add more monsters  (i added one monster to the kitchen)
+// Specification A2- Add combat. (Players can fight using key 1)
+
+void spawnmonster(int currentRoomIndex) {
+  logFunction("spawnmonster");
+
+  int temp1;
+  if (currentRoomIndex == 1) {
+    cout << "A monster appears! DO SOMETHING! TYPE\n 1: attack" << endl;
+
+    cin >> temp1;
+    if (temp1 == 1) {
+      cout << "You have defeated the monster!" << endl << endl;
+      ;
+    }
+  }
+
+  if (currentRoomIndex == 2) {
+    cout << "A monster appears! DO SOMETHING! TYPE\n 1: attack" << endl;
+
+    cin >> temp1;
+    if (temp1 == 1) {
+      cout << "You have defeated the monster!" << endl << endl;
+      ;
+    }
+  }
+
+  if (currentRoomIndex == 3) {
+    cout << "A monster appears! DO SOMETHING! TYPE\n 1: attack" << endl;
+
+    cin >> temp1;
+    if (temp1 == 1) {
+      cout << "You have defeated the monster!" << endl << endl;
+      ;
+    }
+  }
+
+  if (currentRoomIndex == 3) {
+    cout << "A monster appears! DO SOMETHING! TYPE\n 1: attack" << endl;
+
+    cin >> temp1;
+    if (temp1 == 1) {
+      cout << "You have defeated the monster!" << endl << endl;
+      ;
+    }
+  }
+}
+
+// Speciﬁcation C2 - Three Functions
+void roomMove(const Rooms &room, int currentRoomIndex) {
+  logFunction("roommove");
+
+  string temp = " ";
+  cout << "Room Name: " << room.room_name << endl;
+  cout << "Room Description: " << room.room_about << endl;
+  cout << "Occupied: " << (room.occupied ? "Yes" : "No") << endl;
+  if (currentRoomIndex == 0)
+    (temp = " N, W, E , ");
+  if (currentRoomIndex == 1)
+    (temp = " S, , , , ");
+  if (currentRoomIndex == 2)
+    (temp = " , , E, ");
+  if (currentRoomIndex == 3)
+    (temp = " , W, E, ");
+  if (currentRoomIndex == 4)
+    (temp = " , W,E, ");
+  cout << "Exits: " << temp << endl;
+  temp = " ";
+  cout << endl;
+}
+
+// Speciﬁcation C1 - Main Data Structure
+void roomsfunction(Rooms rooms[5]) {
+  logFunction("roomsfunction");
+
+  // Specification A3 - Add the concept of light and dark room ( The
+  // descriptions are vivid of the darkness)
+  rooms[0] = {"Entrance",
+              " Just an ordinary entrance. No lights are on, however.",
+              false,
+              {'1', ' ', '3', '2'},
+              0};
+  rooms[1] = {"Kitchen",
+              "A scary kitchen. There are knives all over!",
+              true,
+              {' ', '0', ' ', ' '},
+              1};
+  rooms[2] = {"Backyard",
+              "A dark backyard. The swing is creaking!",
+              true,
+              {' ', ' ', '0', ' '},
+              2};
+  rooms[3] = {"Living Room",
+              "\033[31mA dark living room. No sofas to be seen? The television "
+              "is straight red!\033[0m",
+              true,
+              {' ', ' ', '4', '0'},
+              3};
+  rooms[4] = {"Bedroom",
+              "Someone must live here. The bed is messy and books are all over "
+              "the room!",
+              true,
+              {' ', ' ', ' ', '3'},
+              4};
+}
+
+// Specification B3 - Input Validation
+void moveFunction(char direction, Rooms &currentRoom, Rooms rooms[],
+                  int &currentRoomIndex) {
+  logFunction("movefunction");
+
+  int newRoomIndex = 0;
+  bool validMove = true;
+
+  if (direction == 'N' && currentRoom.exits[0] != ' ') {
+    newRoomIndex = currentRoom.exits[0] - '0';
+  } else if (direction == 'S' && currentRoom.exits[1] != ' ') {
+    newRoomIndex = currentRoom.exits[1] - '0';
+  } else if (direction == 'E' && currentRoom.exits[2] != ' ') {
+    newRoomIndex = currentRoom.exits[2] - '0';
+  } else if (direction == 'W' && currentRoom.exits[3] != ' ') {
+    newRoomIndex = currentRoom.exits[3] - '0';
+    // Speciﬁcation B2 - Detailed Look
+  } else if (direction == 'L') {
+    if (currentRoomIndex == 0)
+      (cout << "The entrance. It is very spacious; however it is very "
+               "ordinary. No lights are on.");
+    if (currentRoomIndex == 1)
+      (cout << "The kitchen. It is very scary; however it too is very "
+               "ordinary. No lights and knives all over...");
+    if (currentRoomIndex == 2)
+      (cout << "The backyard. Its grassy, and woody; however the swing is "
+               "creaking ominously");
+    if (currentRoomIndex == 3)
+      (cout << "The Living Room. It has no sofas.. The television red and "
+               "papers all around. Maybe there is a ghost?");
+    if (currentRoomIndex == 4)
+      (cout << "The bedroom. It is very small and messy. Who put these books "
+               "here? It's disgusting!");
+
+  } else {
+    validMove = false;
+  }
+
+  // Check if the player wins
+  if (currentRoomIndex == 4 && direction == 'E') {
+    cout << "You escaped! Winner!" << endl;
+    exit(0); // Exit the program
+  }
+
+  if (validMove && newRoomIndex < 5) {
+    currentRoomIndex = newRoomIndex;
+    currentRoom = rooms[currentRoomIndex];
+    cout << "You moved to " << currentRoom.room_name << endl << endl;
+    spawnmonster(currentRoomIndex);
+    roomMove(currentRoom, currentRoomIndex);
+    cout << endl << endl;
+  } else {
+    cout << "Invalid direction!" << endl;
+  }
+}
+
+int main() {
+  greeting();
+  cout << "You have entered a mansion! You have to find the exit. You can move "
+          "north, south, east, or west."
+       << endl
+       << endl;
+
+  Rooms structroomarray[5];
+  roomsfunction(structroomarray);
+
+  int currentRoomIndex = 0;
+  Rooms currentRoom = structroomarray[currentRoomIndex];
+  char direction;
+
+  roomMove(currentRoom, currentRoomIndex);
+
+  while (true) {
+    cout << "Pick a direction applicable to this room (N, S, E, W): OR L ";
+    cin >> direction;
+
+    moveFunction(direction, currentRoom, structroomarray, currentRoomIndex);
+  }
+}
+
+/*Hi! This was pretty hard. I tried my best and I hope you enjoy my program!
+You have entered a mansion! You have to find the exit. You can move north, south, east, or west.
+
+Room Name: Entrance
+Room Description:  Just an ordinary entrance. No lights are on, however.
+Occupied: No
+Exits:  N, W, E , 
+
+Pick a direction applicable to this room (N, S, E, W): OR L N
+You moved to Kitchen
+
+A monster appears! DO SOMETHING! TYPE
+ 1: attack
+1
+You have defeated the monster!
+
+Room Name: Kitchen
+Room Description: A scary kitchen. There are knives all over!
+Occupied: Yes
+Exits:  S, , , , 
+
+
+
+Pick a direction applicable to this room (N, S, E, W): OR L S
+You moved to Entrance
+
+Room Name: Entrance
+Room Description:  Just an ordinary entrance. No lights are on, however.
+Occupied: No
+Exits:  N, W, E , 
+
+
+
+Pick a direction applicable to this room (N, S, E, W): OR L E
+You moved to Living Room
+
+A monster appears! DO SOMETHING! TYPE
+ 1: attack
+1
+You have defeated the monster!
+
+A monster appears! DO SOMETHING! TYPE
+ 1: attack
+1
+You have defeated the monster!
+
+Room Name: Living Room
+Room Description: A dark living room. No sofas to be seen? The television is straight red!
+Occupied: Yes
+Exits:  , W, E, 
+
+
+
+Pick a direction applicable to this room (N, S, E, W): OR L E
+You moved to Bedroom
+
+Room Name: Bedroom
+Room Description: Someone must live here. The bed is messy and books are all over the room!
+Occupied: Yes
+Exits:  , W,E, 
+
+
+
+Pick a direction applicable to this room (N, S, E, W): OR L E
+You escaped! Winner!
+  */
